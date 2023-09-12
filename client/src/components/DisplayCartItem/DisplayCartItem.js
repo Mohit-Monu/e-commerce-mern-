@@ -10,7 +10,7 @@ import Button from "react-bootstrap/Button";
 import { RemoveFromCart } from "../../actions/UserActions";
 import { AddToOrder } from "../../actions/OrderActions";
 import Spinner from "../../components/Spinner/Spinner";
-
+import EmptyCartMessage from "./EmptyCartMessage"
 const DisplayCartItem = () => {
   let originalprice = 0;
   let totalPrice = 0;
@@ -136,7 +136,7 @@ const DisplayCartItem = () => {
         </Row>
       </Container>
     ) : (
-      <h1>Cart Is Empty</h1>
+      <EmptyCartMessage/>
     )
   ) : (
     <Spinner />

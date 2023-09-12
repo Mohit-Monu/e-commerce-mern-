@@ -51,9 +51,15 @@ async function RemoveCartItem(req, res) {
 }
 async function getOrders(req, res) {
   try {
-    const orders = await ORDER.find({ userId: req.user._id }).sort({createdAt:-1});
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * pageSize;
+    const orders = await ORDER.find({ userId: req.user._id }).sort({createdAt:-1}).skip(skip).limit(pageSize);
+    const totalDocs=await ORDER.countDocuments({ userId: req.user._id })
+    totalPage=Math.ceil(totalDocs/pageSize)
     res.status(200).json({
       orders,
+      totalPage
     });
   } catch (err) {
     console.log(err);

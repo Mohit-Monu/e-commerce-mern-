@@ -1,0 +1,31 @@
+/* ProfileForm.css */
+.container {
+    margin-top: 30px;
+  }
+  
+  .profile-form-container {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center form elements horizontally */
+  }
+  
+  .profile-picture-preview {
+    max-width: 100%;
+    margin-bottom: 10px;
+    border-radius: 50%; /* Apply circular border-radius */
+    overflow: hidden; /* Hide any image overflow outside the circle */
+    width: 150px; /* Set the desired width and height for the circle */
+    height: 150px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+  }

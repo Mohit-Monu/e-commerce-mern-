@@ -7,7 +7,7 @@ const authroutes=require("./routes/AuthRoutes")
 const ProductRoutes=require("./routes/ProductRoutes")
 const UserRoutes=require("./routes/UserRoutes")
 const OrderRoutes=require("./routes/OrderRoutes")
-
+const forgetpassRoutes=require("./routes/forgetpassRoutes")
 
 
 const app=express()
@@ -18,6 +18,8 @@ app.use("/user",authroutes)
 app.use("/products",ProductRoutes)
 app.use("/features",UserRoutes)
 app.use("/purchase",OrderRoutes)
+app.use("/password",forgetpassRoutes)
+
 
 mongoose.connect(process.env.MONGODB)
 .then((res)=>{

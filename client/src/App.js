@@ -13,6 +13,7 @@ import CategoryProduct from "./pages/Store/CategoryProduct"
 import { useSelector } from "react-redux";
 import ForgetPassword from "./pages/Auth/ForgetPassword"
 import ResetPassword from "./pages/Auth/ResetPassword"
+import ActivateAccount from "./pages/Auth/ActivateAccount"
 import PageNotFound from "./components/PageNotFound/PageNotFound"
 function App() {
   const user = useSelector((state) => state.authReducer.authData);
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={user ? <Home/>:<Navigate to="../login"/>}/>
           <Route path="/login" element={user ? <Navigate to="../"/>:<Auth/>}/>
           <Route path="/forgetpass" element={user ? <Navigate to="../"/>:<ForgetPassword/>}/>
+          <Route path="/activateaccount/:id" element={user ? <Navigate to="../"/>:<ActivateAccount/>}/>
           <Route path="/resetpassword/:id" element={user ? <Navigate to="../"/>:<ResetPassword/>}/>
           <Route path="/store" element={user ? <Store/>:<Navigate to="../login"/>}/>
           <Route path="/cart" element={user ? <Cart/>:<Navigate to="../login"/>}/>

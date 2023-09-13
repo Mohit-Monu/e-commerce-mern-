@@ -25,7 +25,7 @@ async function resetpass(req, res) {
         to: receivers,
         subject: "Reset your password from here",
         textContent:
-          "We have requested to reset your password from expense tracker click on the below link to reset http://localhost:3000/resetpassword/" +
+          "We have requested to reset your password from e-commmerce click on the below link to reset http://localhost:3000/resetpassword/" +
           uuid,
       });
       const done = await Forgetpass.create({

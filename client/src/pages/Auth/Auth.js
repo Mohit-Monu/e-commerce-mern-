@@ -8,6 +8,7 @@ import {
   signUp as Signupaction,
 } from "../../actions/Authctions";
 import Spinner from "../../components/Spinner/Spinner";
+import ActivateConfirmEmail from "./ActivateConfirmEmail"
 function LogIn() {
   const [login, setLogin] = useState(true);
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ function LogIn() {
 
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignUpError] = useState("");
-
+  const [signUpSuccess,SetSignUpSuccess]=useState(false)
   const refloginemail = useRef();
   const refloginpass = useRef();
 
@@ -54,14 +55,16 @@ function LogIn() {
           email: refsignupemail.current.value,
           password: refsignuppass.current.value,
         };
-        await dispatch(Signupaction(data, navigate));
+        const data2=await dispatch(Signupaction(data));
+        console.log(data2)
+        SetSignUpSuccess(true)
       } catch (err) {
         const error = err.message;
         setSignUpError(error);
       }
     }
   }
-  return loading ? (
+  return signUpSuccess?(<ActivateConfirmEmail/>):loading ? (
     <Spinner />
   ) : login ? (
     <Container
@@ -175,7 +178,6 @@ function LogIn() {
           Have an account? Login
         </NavLink>
       </form>
-    </Container>
-  );
+    </Container>)
 }
 export default LogIn;

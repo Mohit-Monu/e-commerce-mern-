@@ -1,8 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const USERS = require("../models/Auth");
+const CONFIRMEMAIL = require("../models/ConfirmEmail");
 const AWS = require("aws-sdk");
 const multer = require("multer");
+const Sib = require("sib-api-v3-sdk");
+const { v4: uuidv4 } = require("uuid");
 const upload = multer({ storage: multer.memoryStorage() });
 function generateAccessToken(id, name) {
   return jwt.sign({ userId: id, userName: name }, process.env.TOKEN);
@@ -30,6 +33,29 @@ async function login(req, res) {
     res.status(500).json({ message: "Something went wrong" });
   }
 }
+async function activateAccount(req, res) {
+  try {
+    const uuid = req.params.id;
+    const user = await CONFIRMEMAIL.findOneAndUpdate({ uuid: uuid },{isActive:false});
+    if (user) {
+      if (user.isActive) {
+        await USERS.create({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+        });
+        res.status(200).json({ message: "Account Verified True" });
+      } else {
+        res.status(404).json({ message: "Email not found" });
+      }
+    } else {
+      res.status(404).json({ message: "Email not found" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
 async function adduser(req, res) {
   try {
     const { name, email, password } = await req.body;
@@ -47,15 +73,36 @@ async function adduser(req, res) {
         if (err) {
           res.status(500).json({ message: "Something went wrong" });
         } else {
-          const newuser = await USERS.create({
+          const client = Sib.ApiClient.instance;
+          const apiKey = client.authentications["api-key"];
+          apiKey.apiKey = process.env.API_KEY;
+          const tranEmailApi = new Sib.TransactionalEmailsApi();
+          const sender = {
+            email: "bmohit700@gmail.com",
+          };
+          const uuid = uuidv4();
+          const receivers = [
+            {
+              email: email,
+            },
+          ];
+          tranEmailApi.sendTransacEmail({
+            sender,
+            to: receivers,
+            subject: "Confirm your Account from here",
+            textContent:
+              "We have requested to active you account on e-commerce click on the below link to reset http://localhost:3000/activateaccount/" +
+              uuid,
+          });
+          const newuser = await CONFIRMEMAIL.create({
             name: name,
             email: email,
             password: passwordhash,
+            isActive: true,
+            uuid: uuid,
           });
           res.status(201).json({
-            message: "userCreated",
-            token: generateAccessToken(newuser._id, name),
-            user: newuser,
+            message: "User Created Please confirm the Email",
           });
         }
       });
@@ -102,19 +149,19 @@ async function uploadToS3(data, filename) {
 }
 async function updateProfile(req, res) {
   try {
-  const userId = req.user._id;
-  const myobj={
-    name:req.body.name,
-    Country:req.body.country,
-    pincode:req.body.pincode,
-    Address:req.body.address,
-    Phone:req.body.phone
-  }
-  await USERS.findByIdAndUpdate(userId, myobj,{new:true});
+    const userId = req.user._id;
+    const myobj = {
+      name: req.body.name,
+      Country: req.body.country,
+      pincode: req.body.pincode,
+      Address: req.body.address,
+      Phone: req.body.phone,
+    };
+    await USERS.findByIdAndUpdate(userId, myobj, { new: true });
     res.status(200).json({ myobj, success: true });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Something went wrong " });
   }
 }
-module.exports = { adduser, login, uploadPic, updateProfile };
+module.exports = { adduser, login, uploadPic, updateProfile, activateAccount };

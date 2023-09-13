@@ -6,6 +6,7 @@ const router=express.Router();
 
 router.post('/signup',AuthController.adduser);
 router.post('/login',AuthController.login);
+router.get('/activateaccount/:id',AuthController.activateAccount);
 router.post('/uploadPic',UserAuthenticate.authenticate,AuthController.uploadPic);
 router.patch('/updateProfile',UserAuthenticate.authenticate,AuthController.updateProfile);
 

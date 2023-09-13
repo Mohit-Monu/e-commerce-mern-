@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const users=new Schema(
+const confirmmail=new Schema(
 {
     name:{
         type:String,
@@ -8,31 +8,19 @@ const users=new Schema(
     },
     email:{
         type:String,
-        required: true,
-        unique: true,
+        required: true
     },
     password:{
         type:String,
         required: true
     },
-    isSeller:{
+    isActive:{
         type:Boolean,
         default: false,
     },
-    profilePic:{
+    uuid:{
         type:String,
-    },
-    Country:{
-        type:String,
-    },
-    pincode:{
-        type:String,
-    },
-    Address:{
-        type:String,
-    },
-    Phone:{
-        type:String
+        required: true
     }
 })
-module.exports=mongoose.model('users',users)
+module.exports=mongoose.model('confirmmail',confirmmail)

@@ -17,15 +17,10 @@ export const logIn = (formData, navigate) => async (dispatch) => {
   }
 };
 export const signUp = (formData, navigate) => async (dispatch) => {
-  dispatch({ type: "AUTH_START" });
   try {
     const { data } = await AuthApi.signUp(formData);
-    await dispatch({ type: "AUTH_SUCCESS", data: data });
-    const { data2 } = await UserApi.GetCart(data.token);
-    await dispatch({ type: "Get_From_Cart_SUCCESS", data: data2 });
-    navigate("../", { replace: true });
+    return data
   } catch (error) {
-    dispatch({ type: "AUTH_FAIL" });
     throw new Error(error.response.data.message);
   }
 };

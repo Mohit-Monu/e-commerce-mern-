@@ -6,13 +6,21 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import searchicon from "./search_icon.png";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/Authctions";
+import { useRef } from "react";
 function Header() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.authData.user);
   const cart = useSelector((state) => state.userReducer.cartLength);
+  const searchref=useRef()
+  const navigate=useNavigate()
+  function searchHeandler(e){
+    e.preventDefault()
+    const value=searchref.current.value
+    navigate(`../search/${value}`)
+  }
   return (
     <>
       <Navbar sticky="top" expand={"sm"} className="bg-light mb-3 ">
@@ -92,14 +100,16 @@ function Header() {
                   <NavDropdown.Item>{user.name}</NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-              <Form className="d-flex">
+              <Form className="d-flex" onSubmit={searchHeandler}>
                 <Form.Control
                   type="search"
                   placeholder="Search"
                   className="me-2"
                   aria-label="Search"
+                  ref={searchref}
+                  required
                 />
-                <Button variant="outline-warning">
+                <Button variant="outline-warning" type="submit">
                   <img
                     style={{ height: "25px" }}
                     alt="search-icon"

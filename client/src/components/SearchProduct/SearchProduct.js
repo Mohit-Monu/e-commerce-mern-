@@ -6,20 +6,21 @@ import { useParams } from "react-router-dom";
 import PageNotFound from "../PageNotFound/PageNotFound";
 import Pagination from "react-bootstrap/Pagination";
 
-const AllProducts = () => {
+const SearchProducts = () => {
   const [product, setProduct] = useState();
   const [loaded, setLoaded] = useState(false);
-  const { category } = useParams();
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 5;
   const [totalPage, setTotalPage] = useState([]);
+  const productName=useParams().name
+
   useEffect(() => {
     async function getdata() {
       try {
         setLoaded(false);
         const data = await axios.get(
-          `http://localhost:5000/products/${category}?page=${currentPage}&limit=${limit}`
+          `http://localhost:5000/products/searchProducts/${productName}?page=${currentPage}&limit=${limit}`
         );
         setProduct(data.data.product);
 
@@ -36,7 +37,7 @@ const AllProducts = () => {
       }
     }
     getdata();
-  }, [currentPage]);
+  }, [currentPage,productName]);
   console.log(totalPage)
   return loaded ? (
     error ? (
@@ -65,5 +66,4 @@ const AllProducts = () => {
     <Spinner />
   );
 };
-
-export default AllProducts;
+export default SearchProducts;

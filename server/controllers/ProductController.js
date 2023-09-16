@@ -13,6 +13,34 @@ async function GetProducts(req, res) {
       totalPage
     });
   } catch (err) {
+    console.log(err)
+    res.status(500).json({ message: "Something went wrong" });
+  }
+}
+async function SearchProducts(req,res){
+  try {
+    const name=req.params.productName
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * pageSize;
+    const product = await PRODUCT.find({
+      $or: [
+        { title: { $regex: name, $options: 'i' } },
+        { description: { $regex: name, $options: 'i' } },
+      ],
+    }).skip(skip).limit(pageSize);
+    const totalDocs=product.length
+    totalPage=Math.ceil(totalDocs/pageSize)
+    if(product.length==0){
+      return res.status(500).json({ message: "Something went wrong" });
+    
+    }
+    res.status(200).json({
+      product,
+      totalPage
+    });
+  } catch (err) {
+    console.log(err)
     res.status(500).json({ message: "Something went wrong" });
   }
 }
@@ -35,7 +63,7 @@ async function GetProductById(req, res) {
     const totalDocs=await PRODUCT.countDocuments({category:req.params.categoryId})
     totalPage=Math.ceil(totalDocs/pageSize)
     if(product.length==0){
-      return  res.status(500).json({ message: "Something went wrong" });
+      return res.status(500).json({ message: "Something went wrong" });
     
     }
     res.status(200).json({
@@ -69,4 +97,4 @@ async function AddProduct(req, res) {
     res.status(500).json({ message: "Something went wrong" });
   }
 }
-module.exports = { GetProducts, AddProduct,GetProduct,GetProductById };
+module.exports = { GetProducts, AddProduct,GetProduct,GetProductById,SearchProducts };

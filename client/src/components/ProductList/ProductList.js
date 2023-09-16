@@ -19,7 +19,6 @@ const ProductList = (props) => {
   }
   return (
     <Container
-      key={props.products._id}
       fluid
       className="container mt-4"
       style={{ minHeight: "320px", border: "2px solid black" }}
